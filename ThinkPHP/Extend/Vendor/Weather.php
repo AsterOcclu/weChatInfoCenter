@@ -18,11 +18,17 @@ class Weather{
 			$weather = file_get_contents( 'http://m.weather.com.cn/data/'.$code.'.html' );
 			$weather = json_decode( $weather, true );
 			$weather = $weather['weatherinfo'];
-		
-			$message = $weather['city'] . ' ' . $weather['date_y'] . ' ' 
-					. $weather['week'] . ' ' . $weather['weather1'] 
-					. "\n温度：" . $weather['temp1'] . ' 风向：' . $weather['wind1']
-					. "\n" . $weather['index_d'];
+			
+// 			$message = $weather['city'] . ' ' . date('d日') .' '. $weather['week'] . "\n"
+// 					. $weather['weather1'] . ' ' . $weather['temp1'] . ' ' . $weather['wind1']
+// 					. "\n明天：" . $weather['weather2'] . ' ' . $weather['wind2'] . ' ' . $weather['temp2']
+// 					. "\n" . $weather['index_d'];
+			$message = array(
+					array($weather['city'] . date(' m月d日 ') . $weather['week']),
+					array('今天：'. $weather['weather1'] . ' ' . $weather['temp1'] . ' ' . $weather['wind1']),
+					array('明天：'. $weather['weather2'] . ' ' . $weather['temp2'] . ' ' . $weather['wind2']),
+					array($weather['index_d'])
+					);
 		}else{
 			$city = self::searchTree( $placeName, 'city' );
 			if( $city ){
@@ -46,7 +52,7 @@ class Weather{
 		return $message;
 	}
 	
-	private static function search( $val, $type ){
+	public static function search( $val, $type ){
 		self::initCity();
 		if( !$val || !$type ) return false;
 		$key = array_search( $val, self::$index[$type] );
